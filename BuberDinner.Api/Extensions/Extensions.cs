@@ -1,4 +1,5 @@
 using BuberDinner.Application;
+using BuberDinner.Infrastructure;
 
 namespace BuberDinner.Api.Extensions;
 
@@ -11,7 +12,10 @@ public static class Extensions
         builder.Services.AddControllers();
 
         // * Adding The Layers * //
-        builder.Services.AddApplicationLayer();
+        builder.Services
+            .AddApplicationLayer()
+            .AddInfrastructureLayer();
+
 
         return builder;
     }

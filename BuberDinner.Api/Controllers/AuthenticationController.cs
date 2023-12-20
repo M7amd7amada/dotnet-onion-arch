@@ -1,20 +1,49 @@
+using BuberDinner.Application.Services.Authentication;
 using BuberDinner.Contracts.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuberDinner.Api.Controllers;
 
 [Route("api/auth/[action]")]
-public class AuthenticationController : BaseController
+public class AuthenticationController(IAuthenticationService authService) : BaseController
 {
+    private readonly IAuthenticationService _authService = authService;
+
     [HttpPost]
     public IActionResult Login(LoginRequest request)
     {
-        return Ok(request);
+        var authResult = _authService.Login(request.Email, request.Password);
+
+        var authResponse = new AuthenticationResponse()
+        {
+            Id = authResult.Id,
+            FirstName = authResult.FirstName,
+            LastName = authResult.LastName,
+            Email = authResult.Email,
+            Token = authResult.Token
+        };
+
+        return Ok(authResponse);
     }
 
     [HttpPost]
     public IActionResult Register(RegisterRequest request)
     {
-        return Ok(request);
+        var authResult = _authService.Register(
+            request.FirstName,
+            request.LastName,
+            request.Email,
+            request.Password);
+
+        var authResponse = new AuthenticationResponse()
+        {
+            Id = authResult.Id,
+            FirstName = authResult.FirstName,
+            LastName = authResult.LastName,
+            Email = authResult.Email,
+            Token = authResult.Token
+        };
+
+        return Ok(authResponse);
     }
 }
