@@ -1,7 +1,11 @@
+using BuberDinner.Application.Common.Interfaces.Authentication;
+
 namespace BuberDinner.Application.Services.Authentication;
 
-public class AuthenticationService : IAuthenticationService
+public class AuthenticationService(IJwtTokenGenerator tokenGenerator) : IAuthenticationService
 {
+    private readonly IJwtTokenGenerator _tokenGenerator = tokenGenerator;
+
     public AuthenticationResult Login(string email, string password)
     {
         return new()
@@ -20,13 +24,16 @@ public class AuthenticationService : IAuthenticationService
         string email,
         string password)
     {
+        var userId = Guid.NewGuid();
+        var token = _tokenGenerator.GenerateToken(userId, firstName, lastName);
+
         return new()
         {
-            Id = Guid.NewGuid(),
+            Id = userId,
             FirstName = firstName,
             LastName = lastName,
             Email = email,
-            Token = "token"
+            Token = token
         };
     }
 }

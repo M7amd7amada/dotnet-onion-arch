@@ -14,7 +14,7 @@ public static class Extensions
         // * Adding The Layers * //
         builder.Services
             .AddApplicationLayer()
-            .AddInfrastructureLayer();
+            .AddInfrastructureLayer(builder.Configuration);
 
 
         return builder;
