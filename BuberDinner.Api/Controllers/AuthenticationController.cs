@@ -16,10 +16,10 @@ public class AuthenticationController(IAuthenticationService authService) : Base
 
         var authResponse = new AuthenticationResponse()
         {
-            Id = authResult.Id,
-            FirstName = authResult.FirstName,
-            LastName = authResult.LastName,
-            Email = authResult.Email,
+            Id = authResult.User.Id,
+            FirstName = authResult.User.FirstName,
+            LastName = authResult.User.LastName,
+            Email = authResult.User.Email,
             Token = authResult.Token
         };
 
@@ -37,10 +37,10 @@ public class AuthenticationController(IAuthenticationService authService) : Base
 
         var authResponse = new AuthenticationResponse()
         {
-            Id = authResult.Id,
-            FirstName = authResult.FirstName,
-            LastName = authResult.LastName,
-            Email = authResult.Email,
+            Id = authResult.User.Id,
+            FirstName = authResult.User.FirstName,
+            LastName = authResult.User.LastName,
+            Email = authResult.User.Email,
             Token = authResult.Token
         };
 

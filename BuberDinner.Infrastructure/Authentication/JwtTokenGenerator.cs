@@ -3,26 +3,24 @@ using System.Security.Claims;
 using System.Text;
 using BuberDinner.Application.Common.Interfaces.Authentication;
 using BuberDinner.Application.Common.Interfaces.Services;
-using Microsoft.Extensions.Configuration;
+using BuberDinner.Domain.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BuberDinner.Infrastructure.Authentication;
 
 public class JwtTokenGenerator(
-    IConfiguration configuartion,
     IDateTimeProvider dateTimeProvider,
     IOptions<JwtSettings> jwtOptions) : IJwtTokenGenerator
 {
     private readonly JwtSettings _jwtSettings = jwtOptions.Value;
-    private readonly IConfiguration _configuartion = configuartion;
     private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
 
-    public string GenerateToken(Guid userId, string firstName, string lastName)
+    public string GenerateToken(User user)
     {
         var signingCredentials = GetSigningCredentials(_jwtSettings.SecretKey);
 
-        var claims = GetClaims(userId, firstName, lastName);
+        var claims = GetClaims(user);
 
         var securityToken = new JwtSecurityToken(
             claims: claims,
@@ -44,14 +42,14 @@ public class JwtTokenGenerator(
         );
     }
 
-    private static Claim[] GetClaims(Guid userId, string firstName, string lastName)
+    private static Claim[] GetClaims(User user)
     {
         return
         [
-            new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.GivenName, firstName),
-            new Claim(JwtRegisteredClaimNames.FamilyName, lastName),
+            new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
+            new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
         ];
     }
 }
