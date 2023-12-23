@@ -1,5 +1,4 @@
 using BuberDinner.Api.Extensions;
-using BuberDinner.Api.Middlewares;
 
 var app = WebApplication.CreateBuilder().ConfigureServices().Build();
 

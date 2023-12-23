@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
 using BuberDinner.Api.Common.Constants;
+using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -94,5 +96,11 @@ public class AppProblemDetailsFactory(
         }
 
         _configure?.Invoke(new() { HttpContext = httpContext!, ProblemDetails = problemDetails });
+
+        var errors = httpContext?.Items[GlobalConstants.Errors] as List<Error>;
+        if (errors is not null)
+        {
+            problemDetails.Extensions.Add(GlobalConstants.ErrorCodes, errors.Select(e => e.Code));
+        }
     }
 }
