@@ -1,7 +1,5 @@
-using BuberDinner.Api.Common.Errors;
 using BuberDinner.Application;
 using BuberDinner.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace BuberDinner.Api.Extensions;
 
@@ -9,18 +7,11 @@ public static class Extensions
 {
     public static WebApplicationBuilder ConfigureServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-
-        builder.Services.AddControllers();
-
-        builder.Services.AddSingleton<ProblemDetailsFactory, AppProblemDetailsFactory>();
-
-        // * Adding The Layers * //
+        // * Adding The Layers Services * //
         builder.Services
             .AddApplicationLayer()
+            .AddPresentationLayer()
             .AddInfrastructureLayer(builder.Configuration);
-
 
         return builder;
     }

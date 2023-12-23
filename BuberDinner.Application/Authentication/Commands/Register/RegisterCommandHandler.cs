@@ -14,12 +14,13 @@ public class RegisterCommandHandler(IJwtTokenGenerator tokenGenerator, IUserRepo
     private readonly IJwtTokenGenerator _tokenGenerator = tokenGenerator;
     private readonly IUserRepository _userRepository = userRepository;
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public async Task<ErrorOr<AuthenticationResult>> Handle(
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         RegisterCommand command,
         CancellationToken cancellationToken)
     {
+        // ** This for just get rid of the annoying warning for not using await keyword** //
+        await Task.CompletedTask;
+
         if (_userRepository.GetUserByEmail(command.Email) is not null)
         {
             return Errors.User.DuplicateEmail;

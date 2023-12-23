@@ -15,12 +15,12 @@ public class LoginQueryHandler(
     private readonly IJwtTokenGenerator _tokenGenerator = tokenGenerator;
     private readonly IUserRepository _userRepository = userRepository;
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public async Task<ErrorOr<AuthenticationResult>> Handle(
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         LoginQuery query,
         CancellationToken cancellationToken)
     {
+        // ** This for just get rid of the annoying warning for not using await keyword** //
+        await Task.CompletedTask;
 
         if (_userRepository.GetUserByEmail(query.Email) is not User user)
         {

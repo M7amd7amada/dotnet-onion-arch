@@ -4,26 +4,23 @@ using BuberDinner.Application.Authentication.Queries.Login;
 using BuberDinner.Contracts.Authentication;
 using BuberDinner.Domain.Common.Errors;
 using ErrorOr;
+using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuberDinner.Api.Controllers;
 
 [Route("api/auth/[action]")]
 public class AuthenticationController(
-    ISender mediator) : ApiController
+    ISender mediator, IMapper mapper) : ApiController
 {
     private readonly ISender _mediator = mediator;
+    private readonly IMapper _mapper = mapper;
 
     [HttpPost]
     public async Task<IActionResult> LoginAsync(LoginRequest request)
     {
-        var query = new LoginQuery
-        {
-            Email = request.Email,
-            Password = request.Password
-        };
+        var query = _mapper.Map<LoginQuery>(request);
 
         ErrorOr<AuthenticationResult> authResult = await _mediator.Send(query);
 
@@ -36,7 +33,7 @@ public class AuthenticationController(
         }
 
         return authResult.Match(
-            authResult => Ok(MapAuthResponse(authResult)),
+            authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
             Problem
         );
     }
@@ -44,31 +41,13 @@ public class AuthenticationController(
     [HttpPost]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
-        var command = new RegisterCommand
-        {
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            Email = request.Email,
-            Password = request.Password
-        };
+        var command = _mapper.Map<RegisterCommand>(request);
 
         ErrorOr<AuthenticationResult> authResult = await _mediator.Send(command);
 
         return authResult.Match(
-            authResult => Ok(MapAuthResponse(authResult)),
+            authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
             Problem
         );
-    }
-
-    private static AuthenticationResponse MapAuthResponse(AuthenticationResult authResult)
-    {
-        return new AuthenticationResponse()
-        {
-            Id = authResult.User.Id,
-            FirstName = authResult.User.FirstName,
-            LastName = authResult.User.LastName,
-            Email = authResult.User.Email,
-            Token = authResult.Token
-        };
     }
 }
