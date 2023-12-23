@@ -1,5 +1,7 @@
+using BuberDinner.Api.Common.Errors;
 using BuberDinner.Application;
 using BuberDinner.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace BuberDinner.Api.Extensions;
 
@@ -9,7 +11,10 @@ public static class Extensions
     {
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
         builder.Services.AddControllers();
+
+        builder.Services.AddSingleton<ProblemDetailsFactory, AppProblemDetailsFactory>();
 
         // * Adding The Layers * //
         builder.Services
